@@ -5,38 +5,30 @@ import chars from "../chars.json";
 
 export default class GameDisplay extends Component {
   state = {
-    currPoints: 0,
-    topPoints: 0,
-    guessed: [],
+    score: 0,
+    topScore: 0,
+    guesses: [],
     options: chars,
     win: false,
     lose: false
   };
 
   selectChar = id => {
-    // Only do this is the user hasn't won or lost yet
     if (!this.state.lose && !this.state.win) {
-      if (this.state.guessed.includes(id)) {
-        // User has lost
+      if (this.state.guesses.includes(id)) {
         this.setState({ lose: true });
-        // Check to see if this was the user's best score
-        if (this.state.currPoints > this.state.topPoints) {
-          this.setState({ topPoints: this.state.currPoints });
+        if (this.state.score > this.state.topScore) {
+          this.setState({ topScore: this.state.score });
         }
       } else {
-        // Add the clicked character's id to the list of guessed characters
-        const guessed = this.state.guessed.concat(id);
-        // Update the guessed array and the current amount of points
-        // I know the setting of currPoints is weird but it's the only way it works
-        this.setState({ guessed, currPoints: this.state.guessed.length + 1 });
-        // Shuffle the characters so the user gets confused
-        this.shuffle();
-        // If their current score is better than their best score, show it
-        if (this.state.currPoints >= this.state.topPoints) {
-          this.setState({ topPoints: this.state.currPoints + 1 });
-        }
-        // If they've guessed all the characters, alert them of their feat of memory!
-        if (this.state.guessed.length >= this.state.options.length - 1) {
+        
+        const guesses = this.state.guesses.concat(id);     
+        this.setState({ guesses, score: this.state.guesses.length + 1 });      
+        this.shuffle();     
+        if (this.state.score >= this.state.topScore) {
+          this.setState({ topScore: this.state.score + 1 });
+        }  
+        if (this.state.guesses.length >= this.state.options.length - 1) {
           this.setState({ win: true });
         }
       }
@@ -46,26 +38,23 @@ export default class GameDisplay extends Component {
   shuffle() {
     let rand, temp, i;
     let options = this.state.options;
-    // Iterate through array, switching with random indexes
     for (i = options.length - 1; i > 0; i--) {
       rand = Math.floor(Math.random() * (i + 1));
       temp = options[i];
       options[i] = this.state.options[rand];
       options[rand] = temp;
     }
-    // Update state
+    
     this.setState({ options });
   }
 
   reset = () => {
-    // Reset state
     this.setState({
-      currPoints: 0,
-      guessed: [],
+      score: 0,
+      guesses: [],
       win: false,
       lose: false
     });
-    // Shuffle characters
     this.shuffle();
   };
 
@@ -73,13 +62,13 @@ export default class GameDisplay extends Component {
     return (
       <div>
         <Results
-          topPoints={this.state.topPoints}
-          currPoints={this.state.currPoints}
+          topScore={this.state.topScore}
+          score={this.state.score}
           win={this.state.win}
           lose={this.state.lose}
           reset={this.reset}
         />
-        <div className="container flex wrap">
+        <div>
           {this.state.options.map(character => (
             <Character
               id={character.id}

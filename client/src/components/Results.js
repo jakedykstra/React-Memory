@@ -1,20 +1,20 @@
 import React from "react";
 
-const Results = props => {
+const Results = ({score, topScore, win, lose, reset}) => {
   return (
-    <div className="container teal lighten-4 jumbotron">
-    <h5 className="flex"><strong>Click on all the characters without clicking on anyone twice!</strong></h5>
-      <div className="flex wrap">
-        <h5>Current Score: {props.currPoints}</h5>
-        <h5>Top Score: {props.topPoints}</h5>
+    <div className="container">
+    <h5>Click on all the characters without picking the same character twice!</h5>
+      <div>
+        <h5>Current Score: {score}</h5>
+        <h5>Top Score: {topScore}</h5>
       </div>
       <div>
         <h3>
-          {props.win ? "You Won!" : ""}
-          {props.lose ? "You Lost!" : ""}
+          {win ? "You Won!" : ""}
+          {lose ? "You Lost!" : ""}
         </h3>
-        {(props.lose || props.win) ? (
-          <button className="btn teal darken-4" onClick={() => props.reset()}>
+        {(lose || win) ? (
+          <button className="btn" onClick={() => reset()}>
             Reset
           </button>
         ) : (
